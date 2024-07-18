@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 class TestNoteCreation(TestCase):
-
+    """Класс для тестов созданий заметок."""
     NEW_NOTE_TEXT = 'Новый текст заметки'
     NEW_NOTE_TITLE = 'Заголовок'
     NEW_NOTE_SLUG = 'note_1'
@@ -101,6 +101,7 @@ class TestNoteCreation(TestCase):
 
 
 class TestNoteEditDelete(TestCase):
+    """Класс для тестов редактирования и удаления заметок."""
     NOTE_TEXT = 'Текст заметки'
     NOTE_TITLE = 'Заголовок'
     NOTE_SLUG = 'note_1'

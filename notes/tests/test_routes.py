@@ -22,7 +22,7 @@ User = get_user_model()
 
 
 class TestRoutes(TestCase):
-
+    """Класс тестирования путей страниц и их доступности."""
     @classmethod
     def setUpTestData(cls):
         cls.author = User.objects.create(username='Карл Маркс')
