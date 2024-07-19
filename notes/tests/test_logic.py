@@ -18,6 +18,7 @@ User = get_user_model()
 
 class TestNoteCreation(TestCase):
     """Класс для тестов созданий заметок."""
+
     NEW_NOTE_TEXT = 'Новый текст заметки'
     NEW_NOTE_TITLE = 'Заголовок'
     NEW_NOTE_SLUG = 'note_1'
@@ -102,6 +103,7 @@ class TestNoteCreation(TestCase):
 
 class TestNoteEditDelete(TestCase):
     """Класс для тестов редактирования и удаления заметок."""
+
     NOTE_TEXT = 'Текст заметки'
     NOTE_TITLE = 'Заголовок'
     NOTE_SLUG = 'note_1'
@@ -117,28 +119,19 @@ class TestNoteEditDelete(TestCase):
             slug=cls.NOTE_SLUG, author=cls.author
         )
         cls.note_url = reverse('notes:detail', args=(cls.note.slug,))
-
-        # Создаём клиент для пользователя-автора.
         cls.author_client = Client()
-        # "Логиним" пользователя в клиенте.
         cls.author_client.force_login(cls.author)
-        # Делаем всё то же самое для пользователя-читателя.
         cls.reader = User.objects.create(username='Читатель')
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
-
-        # URL для редактирования.
         cls.edit_url = reverse('notes:edit', args=(cls.note.slug,))
-        # URL для удаления.
         cls.delete_url = reverse('notes:delete', args=(cls.note.slug,))
-        # Формируем данные для POST-запроса по обновлению заметки.
-        # cls.form_data = {'text': cls.NEW_NOTE_TEXT}
+        cls.success_url = reverse('notes:success', args=None)
         cls.form_data = {
             'title': cls.NEW_NOTE_TITLE,
             'text': cls.NEW_NOTE_TEXT,
             'slug': cls.NEW_NOTE_SLUG,
         }
-        cls.success_url = reverse('notes:success', args=None)
 
     def test_author_can_delete_note(self):
         """Пользователь может удалять свои заметки"""

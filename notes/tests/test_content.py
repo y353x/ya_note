@@ -14,10 +14,7 @@ User = get_user_model()
 
 class TestNotesPage(TestCase):
     """Правильность распределения контента."""
-    @classmethod
-    def setUpTestData(cls):
-        Note.objects.create(title='Новость', text='Просто текст.')
-        """Класс для тестов редактирования и удаления заметок."""
+
     NOTE_TEXT = 'Текст заметки'
     NOTE_TITLE = 'Заголовок'
     NOTE_SLUG = 'note_1'
@@ -62,7 +59,6 @@ class TestNotesPage(TestCase):
         )
         for name, args in url_tuple:
             with self.subTest(name=name):
-                print(args)
                 url = reverse(name, args=args)
                 response = self.author_client.get(url)
                 assert 'form' in response.context

@@ -23,12 +23,14 @@ User = get_user_model()
 
 class TestRoutes(TestCase):
     """Класс тестирования путей страниц и их доступности."""
+
     @classmethod
     def setUpTestData(cls):
         cls.author = User.objects.create(username='Карл Маркс')
         cls.reader = User.objects.create(username='Фридрих Энгельс')
         cls.note = Note.objects.create(
-            title='Заголовок', text='Текст', slug='note_1', author=cls.author
+            title='Заголовок', text='Текст',
+            slug='note_1', author=cls.author
         )
 
     def test_pages_availability(self):
