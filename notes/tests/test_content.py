@@ -3,36 +3,13 @@
 # в список заметок одного пользователя не попадают
 #       заметки другого пользователя;
 # на страницы создания и редактирования заметки передаются формы.
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
 from django.urls import reverse
 from notes.forms import NoteForm
-from notes.models import Note
-
-User = get_user_model()
+from .common import TestWithNote
 
 
-class TestNotesPage(TestCase):
+class TestNotesPage(TestWithNote):
     """Правильность распределения контента."""
-
-    NOTE_TEXT = 'Текст заметки'
-    NOTE_TITLE = 'Заголовок'
-    NOTE_SLUG = 'note_1'
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.author = User.objects.create(username='Автор')
-        cls.note = Note.objects.create(
-            title=cls.NOTE_TITLE, text=cls.NOTE_TEXT,
-            slug=cls.NOTE_SLUG, author=cls.author
-        )
-        cls.list_url = reverse('notes:list', args=None)
-        cls.author_client = Client()
-        cls.author_client.force_login(cls.author)
-        # Другой пользователь.
-        cls.reader = User.objects.create(username='Читатель')
-        cls.reader_client = Client()
-        cls.reader_client.force_login(cls.reader)
 
     def test_notes_list_for_different_users(self):
         """

@@ -13,35 +13,16 @@
 # Страницы регистрации пользователей, входа в учётную запись и выхода из неё
 #       доступны всем пользователям.
 from http import HTTPStatus
-from django.test import TestCase
 from django.urls import reverse
-from notes.models import Note
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from .common import TestWithNote, LOGIN_URLS, ADD_URLS, EDIT_URLS
 
 
-class TestRoutes(TestCase):
+class TestRoutes(TestWithNote):
     """Класс тестирования путей страниц и их доступности."""
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.author = User.objects.create(username='Карл Маркс')
-        cls.reader = User.objects.create(username='Фридрих Энгельс')
-        cls.note = Note.objects.create(
-            title='Заголовок', text='Текст',
-            slug='note_1', author=cls.author
-        )
 
     def test_pages_availability(self):
         """Доступность страниц анонимному пользователю."""
-        urls = (
-            ('notes:home', None),
-            ('users:login', None),
-            ('users:logout', None),
-            ('users:signup', None),
-        )
-        for name, args in urls:
+        for name, args in LOGIN_URLS:
             with self.subTest(name=name):
                 url = reverse(name, args=args)
                 response = self.client.get(url)
@@ -53,12 +34,7 @@ class TestRoutes(TestCase):
         заметок notes/, страница успешного добавления заметки done/,
         страница добавления новой заметки add/.
         """
-        urls = (
-            ('notes:list', None),
-            ('notes:add', None),
-            ('notes:success', None),
-        )
-        for name, args in urls:
+        for name, args in ADD_URLS:
             with self.subTest(name=name):
                 self.client.force_login(self.author)
                 url = reverse(name, args)
@@ -80,7 +56,7 @@ class TestRoutes(TestCase):
             self.client.force_login(user)
             # Для каждой пары "пользователь - ожидаемый ответ"
             # перебираем имена тестируемых страниц:
-            for name in ('notes:edit', 'notes:delete', 'notes:detail'):
+            for name in EDIT_URLS:
                 with self.subTest(user=user, name=name):
                     # Для страницы требуется slug, добавляем в аргумент.
                     url = reverse(name, args=(self.note.slug,))
@@ -97,9 +73,9 @@ class TestRoutes(TestCase):
         # Сохраняем адрес страницы логина:
         login_url = reverse('users:login')
         # В цикле перебираем имена страниц, с которых ожидаем редирект:
-        for name in ('notes:add', 'notes:list', 'notes:success'):
+        for name, args in ADD_URLS:
             with self.subTest(name=name):
-                url = reverse(name, args=None)  # args=None - для наглядности.
+                url = reverse(name, args=args)
                 redirect_url = f'{login_url}?next={url}'
                 response = self.client.get(url)
                 # Проверяем, что редирект приведёт именно на указанную ссылку.
